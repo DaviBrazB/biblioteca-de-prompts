@@ -13,5 +13,10 @@
     "titulo": "Resumir processo",
     "categoria": "Gestão",
     "texto": "Resuma o processo a seguir em tópicos curtos, destacando prazos e pendências: [TEXTO]."
+  },
+  {
+    "titulo": "Elaborar ementa",
+    "categoria": "Gestão",
+    "texto": "Elabore uma ementa resumida do seguinte documento: [TEXTO]."
   }
 ]
