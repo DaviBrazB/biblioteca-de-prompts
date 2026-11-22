@@ -1,0 +1,17 @@
+[
+  {
+    "titulo": "Elaborar ofício",
+    "categoria": "Redação oficial",
+    "texto": "Redija um ofício conforme o Manual de Redação da Presidência da República, com o seguinte assunto: [ASSUNTO]."
+  },
+  {
+    "titulo": "Elaborar nota técnica",
+    "categoria": "Redação oficial",
+    "texto": "Elabore uma nota técnica com Introdução, Análise e Conclusão sobre o seguinte tema: [TEMA]."
+  },
+  {
+    "titulo": "Resumir processo",
+    "categoria": "Gestão",
+    "texto": "Resuma o processo a seguir em tópicos curtos, destacando prazos e pendências: [TEXTO]."
+  }
+]
