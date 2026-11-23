@@ -4,14 +4,108 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Biblioteca de Prompts</title>
+  <meta name="description" content="Biblioteca de Prompts: prompts prontos e revisados para redação oficial, licitações e contratos, gestão, engenharia, RH e jurídico no serviço público.">
+
+  <meta property="og:title" content="Biblioteca de Prompts">
+  <meta property="og:description" content="Prompts prontos para o serviço público: redação oficial, licitações e contratos, gestão, engenharia, RH e jurídico.">
+  <meta property="og:type" content="website">
+  <!-- Pendência do dono do projeto: definir o domínio final e atualizar esta URL -->
+  <meta property="og:url" content="https://exemplo.com/">
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Biblioteca de Prompts</h1>
-    <p>Prompts prontos para o serviço público</p>
+  <a class="pular-para-conteudo" href="#conteudo-principal">Pular para o conteúdo</a>
+
+  <header class="cabecalho">
+    <div class="cabecalho__faixa">
+      <p class="cabecalho__marca" aria-hidden="true">BP</p>
+      <h1 class="cabecalho__titulo">Biblioteca de Prompts</h1>
+      <p class="cabecalho__subtitulo">Prompts prontos e revisados para o dia a dia do serviço público</p>
+    </div>
+
+    <form class="painel-busca" role="search" aria-label="Buscar prompts">
+      <div class="painel-busca__campo">
+        <label for="busca" class="rotulo-oculto">Buscar por título, descrição ou tag</label>
+        <input type="search" id="busca" name="busca" placeholder="Buscar por título, descrição ou tag...">
+      </div>
+
+      <div class="painel-busca__filtros">
+        <div class="campo-filtro">
+          <label for="filtro-area">Área</label>
+          <select id="filtro-area" name="area">
+            <option value="">Todas as áreas</option>
+            <option value="Redação oficial">Redação oficial</option>
+            <option value="Licitações e contratos">Licitações e contratos</option>
+            <option value="Gestão">Gestão</option>
+            <option value="Engenharia">Engenharia</option>
+            <option value="RH">RH</option>
+            <option value="Jurídico">Jurídico</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="filtro-tipo">Tipo</label>
+          <select id="filtro-tipo" name="tipo">
+            <option value="">Todos os tipos</option>
+            <option value="Prompt">Prompt</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro campo-filtro--botao">
+          <label for="alternar-tema">Tema</label>
+          <button type="button" id="alternar-tema" class="botao-tema" aria-pressed="false">
+            Modo escuro
+          </button>
+        </div>
+      </div>
+    </form>
   </header>
-  <main id="lista"></main>
+
+  <main id="conteudo-principal" class="conteudo">
+    <p id="estado-carregando" class="estado-lista" role="status">Carregando prompts...</p>
+    <p id="estado-erro" class="estado-lista estado-lista--erro" role="alert" hidden>
+      Não foi possível carregar os prompts agora. Tente novamente em alguns instantes.
+    </p>
+    <p id="estado-vazio" class="estado-lista" hidden>
+      Nenhum prompt encontrado com os filtros atuais.
+    </p>
+
+    <ul id="lista-prompts" class="grade-prompts" aria-label="Lista de prompts"></ul>
+  </main>
+
+  <footer class="rodape">
+    <p>Biblioteca de Prompts &mdash; conteúdo mantido pela equipe responsável pelo repositório.</p>
+  </footer>
+
+  <template id="modelo-card">
+    <li class="prompt-card">
+      <div class="prompt-card__cabecalho">
+        <span class="prompt-card__area"></span>
+        <span class="prompt-card__tipo"></span>
+      </div>
+
+      <h2 class="prompt-card__titulo"></h2>
+      <p class="prompt-card__descricao"></p>
+
+      <ul class="prompt-card__tags"></ul>
+
+      <div class="prompt-card__texto">
+        <p class="prompt-card__texto-conteudo"></p>
+      </div>
+
+      <div class="prompt-card__acoes">
+        <button type="button" class="prompt-card__toggle" aria-expanded="false">
+          Ver mais
+        </button>
+        <button type="button" class="prompt-card__copiar">
+          Copiar
+        </button>
+      </div>
+    </li>
+  </template>
+
   <script src="script.js"></script>
 </body>
 </html>
