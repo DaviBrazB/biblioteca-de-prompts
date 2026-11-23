@@ -1,18 +1,462 @@
+/* ===========================================================
+   Biblioteca de Prompts - estilos base
+   Paleta azul escuro e branco, com suporte a tema claro/escuro
+   via atributo data-theme no <html> e prefers-color-scheme.
+   =========================================================== */
+
+:root {
+  --cor-bg: #f5f7fb;
+  --cor-superficie: #ffffff;
+  --cor-superficie-alt: #eef2f8;
+  --cor-texto: #101826;
+  --cor-texto-suave: #45526b;
+  --cor-navy-900: #0a1f3d;
+  --cor-navy-700: #14335c;
+  --cor-accent: #1d5fae;
+  --cor-accent-forte: #123a73;
+  --cor-borda: #d7deea;
+  --cor-tag-bg: #e3ebf8;
+  --cor-tag-texto: #1d3a63;
+  --cor-foco: #123a73;
+  --cor-erro: #8a1f2d;
+  --cor-erro-bg: #fbe9ea;
+
+  --fonte-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
+  --raio-sm: 6px;
+  --raio-md: 10px;
+  --raio-lg: 16px;
+  --sombra-card: 0 1px 2px rgba(10, 31, 61, 0.08), 0 8px 24px rgba(10, 31, 61, 0.06);
+  --transicao: 150ms ease;
+}
+
+[data-theme="escuro"] {
+  --cor-bg: #0b1322;
+  --cor-superficie: #121b2e;
+  --cor-superficie-alt: #182437;
+  --cor-texto: #eaf0fa;
+  --cor-texto-suave: #aab8cf;
+  --cor-navy-900: #060d1c;
+  --cor-navy-700: #10233f;
+  --cor-accent: #6ea8e8;
+  --cor-accent-forte: #9cc3f0;
+  --cor-borda: #273751;
+  --cor-tag-bg: #1c2d47;
+  --cor-tag-texto: #bfd4f2;
+  --cor-foco: #9cc3f0;
+  --cor-erro: #f3b4bc;
+  --cor-erro-bg: #2a1518;
+  --sombra-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="claro"]) {
+    --cor-bg: #0b1322;
+    --cor-superficie: #121b2e;
+    --cor-superficie-alt: #182437;
+    --cor-texto: #eaf0fa;
+    --cor-texto-suave: #aab8cf;
+    --cor-navy-900: #060d1c;
+    --cor-navy-700: #10233f;
+    --cor-accent: #6ea8e8;
+    --cor-accent-forte: #9cc3f0;
+    --cor-borda: #273751;
+    --cor-tag-bg: #1c2d47;
+    --cor-tag-texto: #bfd4f2;
+    --cor-foco: #9cc3f0;
+    --cor-erro: #f3b4bc;
+    --cor-erro-bg: #2a1518;
+    --sombra-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.35);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  max-width: 800px;
+  margin: 0;
+  font-family: var(--fonte-base);
+  background: var(--cor-bg);
+  color: var(--cor-texto);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Foco visível de teclado em qualquer elemento interativo */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--cor-foco);
+  outline-offset: 2px;
+  border-radius: var(--raio-sm);
+}
+
+/* Link de pular para o conteúdo, só aparece ao focar */
+.pular-para-conteudo {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--cor-navy-900);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 0 0 var(--raio-sm) 0;
+  z-index: 100;
+}
+
+.pular-para-conteudo:focus {
+  left: 0;
+}
+
+.rotulo-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ===========================================================
+   Cabeçalho
+   =========================================================== */
+
+.cabecalho {
+  background: linear-gradient(180deg, var(--cor-navy-900) 0%, var(--cor-navy-700) 100%);
+  color: #ffffff;
+  padding: 48px 20px 72px;
+  position: relative;
+}
+
+.cabecalho__faixa {
+  max-width: 960px;
   margin: 0 auto;
+}
+
+.cabecalho__marca {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--raio-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 20px;
+}
+
+.cabecalho__titulo {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.cabecalho__subtitulo {
+  margin: 10px 0 0;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 42ch;
+}
+
+/* Painel de busca flutuando sobre a borda inferior do cabeçalho */
+.painel-busca {
+  max-width: 960px;
+  margin: -40px auto 0;
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-card);
   padding: 20px;
-  background: #f5f5f5;
+  position: relative;
+  z-index: 2;
 }
-header { text-align: center; margin-bottom: 30px; }
-.card {
-  background: white;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+
+.painel-busca__campo input[type="search"] {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-md);
+  background: var(--cor-superficie-alt);
+  color: var(--cor-texto);
+  font-family: inherit;
 }
-.card h2 { margin-top: 0; }
-.card pre { white-space: pre-wrap; background: #eee; padding: 10px; border-radius: 4px; }
-button { cursor: pointer; padding: 8px 12px; }
+
+.painel-busca__filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.campo-filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 160px;
+  min-width: 160px;
+}
+
+.campo-filtro label {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+.campo-filtro select {
+  padding: 10px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-md);
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.campo-filtro--botao {
+  justify-content: flex-end;
+}
+
+.botao-tema {
+  padding: 10px 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-md);
+  background: var(--cor-superficie-alt);
+  color: var(--cor-texto);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background var(--transicao), border-color var(--transicao);
+}
+
+.botao-tema:hover {
+  border-color: var(--cor-accent);
+}
+
+/* ===========================================================
+   Conteúdo principal e estados
+   =========================================================== */
+
+.conteudo {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+.estado-lista {
+  text-align: center;
+  color: var(--cor-texto-suave);
+  padding: 32px 16px;
+  font-size: 1rem;
+}
+
+.estado-lista--erro {
+  color: var(--cor-erro);
+  background: var(--cor-erro-bg);
+  border-radius: var(--raio-md);
+}
+
+/* ===========================================================
+   Grade e cards de prompt
+   =========================================================== */
+
+.grade-prompts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .grade-prompts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 980px) {
+  .conteudo {
+    max-width: 1140px;
+  }
+
+  .painel-busca,
+  .cabecalho__faixa {
+    max-width: 1140px;
+  }
+
+  .grade-prompts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.prompt-card {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-left: 4px solid var(--cor-accent);
+  border-radius: var(--raio-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--sombra-card);
+}
+
+.prompt-card__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prompt-card__area {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--cor-accent-forte);
+  background: var(--cor-tag-bg);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.prompt-card__tipo {
+  font-size: 0.78rem;
+  color: var(--cor-texto-suave);
+}
+
+.prompt-card__titulo {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.prompt-card__descricao {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.95rem;
+}
+
+.prompt-card__tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+.prompt-card__tags li {
+  font-size: 0.75rem;
+  color: var(--cor-tag-texto);
+  background: var(--cor-tag-bg);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.prompt-card__texto {
+  background: var(--cor-superficie-alt);
+  border-radius: var(--raio-sm);
+  padding: 12px;
+  max-height: 4.6em;
+  overflow: hidden;
+  position: relative;
+  transition: max-height var(--transicao);
+}
+
+.prompt-card__texto.esta-expandido {
+  max-height: none;
+}
+
+.prompt-card__texto::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.6em;
+  background: linear-gradient(180deg, transparent, var(--cor-superficie-alt));
+}
+
+.prompt-card__texto.esta-expandido::after {
+  content: none;
+}
+
+.prompt-card__texto-conteudo {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--cor-texto);
+  white-space: pre-wrap;
+}
+
+.prompt-card__acoes {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.prompt-card__toggle {
+  background: none;
+  border: none;
+  color: var(--cor-accent);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+
+.prompt-card__toggle:hover {
+  text-decoration: underline;
+}
+
+.prompt-card__copiar {
+  background: var(--cor-navy-900);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--raio-sm);
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transicao);
+}
+
+.prompt-card__copiar:hover {
+  background: var(--cor-accent-forte);
+}
+
+.prompt-card__copiar.foi-copiado {
+  background: var(--cor-accent);
+}
+
+/* ===========================================================
+   Rodapé
+   =========================================================== */
+
+.rodape {
+  text-align: center;
+  padding: 24px 20px 40px;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+/* Respeita quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
