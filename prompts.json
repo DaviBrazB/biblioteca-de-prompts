@@ -1,22 +1,79 @@
 [
   {
+    "id": "elaborar-oficio",
     "titulo": "Elaborar ofício",
-    "categoria": "Redação oficial",
-    "texto": "Redija um ofício conforme o Manual de Redação da Presidência da República, com o seguinte assunto: [ASSUNTO]."
+    "descricao": "Redige um ofício formal conforme o Manual de Redação da Presidência da República a partir do assunto informado.",
+    "tipo": "Prompt",
+    "area": "Redação oficial",
+    "tags": ["ofício", "redação oficial", "comunicação"],
+    "texto": "Redija um ofício conforme o Manual de Redação da Presidência da República, com o seguinte assunto: [ASSUNTO].",
+    "dataCriacao": "2026-11-23",
+    "dataAtualizacao": "2026-11-23"
   },
   {
+    "id": "elaborar-nota-tecnica",
     "titulo": "Elaborar nota técnica",
-    "categoria": "Redação oficial",
-    "texto": "Elabore uma nota técnica com Introdução, Análise e Conclusão sobre o seguinte tema: [TEMA]."
+    "descricao": "Gera uma nota técnica estruturada em Introdução, Análise e Conclusão sobre o tema informado.",
+    "tipo": "Prompt",
+    "area": "Redação oficial",
+    "tags": ["nota técnica", "redação oficial", "análise"],
+    "texto": "Elabore uma nota técnica com Introdução, Análise e Conclusão sobre o seguinte tema: [TEMA].",
+    "dataCriacao": "2026-11-23",
+    "dataAtualizacao": "2026-11-23"
   },
   {
+    "id": "resumir-processo",
     "titulo": "Resumir processo",
-    "categoria": "Gestão",
-    "texto": "Resuma o processo a seguir em tópicos curtos, destacando prazos e pendências: [TEXTO]."
+    "descricao": "Resume um processo administrativo em tópicos curtos, destacando prazos e pendências.",
+    "tipo": "Prompt",
+    "area": "Gestão",
+    "tags": ["resumo", "processo", "produtividade"],
+    "texto": "Resuma o processo a seguir em tópicos curtos, destacando prazos e pendências: [TEXTO].",
+    "dataCriacao": "2026-11-23",
+    "dataAtualizacao": "2026-11-23"
   },
   {
+    "id": "elaborar-ementa",
     "titulo": "Elaborar ementa",
-    "categoria": "Gestão",
-    "texto": "Elabore uma ementa resumida do seguinte documento: [TEXTO]."
+    "descricao": "Produz uma ementa resumida de um documento administrativo.",
+    "tipo": "Prompt",
+    "area": "Gestão",
+    "tags": ["ementa", "resumo", "documento"],
+    "texto": "Elabore uma ementa resumida do seguinte documento: [TEXTO].",
+    "dataCriacao": "2026-11-23",
+    "dataAtualizacao": "2026-11-23"
+  },
+  {
+    "id": "revisar-redacao-oficial",
+    "titulo": "Revisar texto conforme o Manual de Redação Oficial",
+    "descricao": "Revisa um texto administrativo ajustando linguagem, formato e padrões do Manual de Redação da Presidência da República.",
+    "tipo": "Prompt",
+    "area": "Redação oficial",
+    "tags": ["revisão", "redação oficial", "manual de redação"],
+    "texto": "Você é um revisor de textos da administração pública federal. Revise o texto abaixo com base no Manual de Redação da Presidência da República, observando: clareza, concisão, impessoalidade, formalidade, uso correto de pronomes de tratamento, padronização de fechos e vocativos, e ausência de jargões desnecessários. Aponte, em uma lista, cada trecho alterado e o motivo da mudança. Em seguida, apresente a versão revisada completa do texto. Caso o texto já esteja adequado em algum ponto, não altere esse trecho. Texto a revisar: [TEXTO].",
+    "dataCriacao": "2026-11-23",
+    "dataAtualizacao": "2026-11-23"
+  },
+  {
+    "id": "elaborar-termo-de-referencia",
+    "titulo": "Apoiar elaboração de Termo de Referência",
+    "descricao": "Auxilia na estruturação de um Termo de Referência para contratação de bens ou serviços.",
+    "tipo": "Prompt",
+    "area": "Licitações e contratos",
+    "tags": ["termo de referência", "licitação", "contratação"],
+    "texto": "Você é um especialista em licitações e contratos administrativos. Com base nas informações fornecidas sobre o objeto da contratação, elabore uma minuta de Termo de Referência contendo as seções: 1) Definição do objeto; 2) Justificativa da contratação; 3) Descrição da solução como um todo; 4) Requisitos da contratação; 5) Modelo de execução do objeto; 6) Modelo de gestão do contrato; 7) Critérios de medição e pagamento; 8) Estimativa do valor da contratação; 9) Adequação orçamentária. Escreva de forma objetiva e use linguagem técnica apropriada à administração pública. Peça esclarecimentos se faltar alguma informação essencial antes de prosseguir. Objeto da contratação: [OBJETO DA CONTRATAÇÃO].",
+    "dataCriacao": "2026-11-23",
+    "dataAtualizacao": "2026-11-23"
+  },
+  {
+    "id": "apoiar-estudo-tecnico-preliminar",
+    "titulo": "Apoiar Estudo Técnico Preliminar",
+    "descricao": "Auxilia na elaboração do Estudo Técnico Preliminar exigido pela Lei 14.133/2021 antes da licitação.",
+    "tipo": "Prompt",
+    "area": "Licitações e contratos",
+    "tags": ["estudo técnico preliminar", "ETP", "lei 14.133/2021", "licitação"],
+    "texto": "Você é um especialista em planejamento de contratações públicas segundo a Lei 14.133/2021. Com base na necessidade descrita, elabore um Estudo Técnico Preliminar (ETP) contendo: 1) Descrição da necessidade; 2) Demonstração da previsão da contratação no plano de contratações anual, se houver; 3) Requisitos da contratação; 4) Levantamento de mercado e justificativa da escolha da solução; 5) Estimativa das quantidades e valores; 6) Justificativa para o parcelamento ou não da solução; 7) Resultados pretendidos; 8) Providências para adequação do ambiente; 9) Declaração de viabilidade da contratação. Fundamente as conclusões nos dispositivos aplicáveis da Lei 14.133/2021. Caso falte alguma informação necessária, sinalize isso de forma clara. Necessidade a ser atendida: [NECESSIDADE].",
+    "dataCriacao": "2026-11-23",
+    "dataAtualizacao": "2026-11-23"
   }
 ]
