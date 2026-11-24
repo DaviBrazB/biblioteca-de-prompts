@@ -6,14 +6,47 @@
   <title>Biblioteca de Prompts</title>
   <meta name="description" content="Biblioteca de Prompts: prompts prontos e revisados para redação oficial, licitações e contratos, gestão, engenharia, RH e jurídico no serviço público.">
 
+  <meta name="theme-color" content="#0a1f3d">
+  <meta name="color-scheme" content="light dark">
+
+  <!--
+    Domínio: enquanto o endereço definitivo não existir, og:url e og:image usam o
+    placeholder https://exemplo.com/. Para trocar, rode:
+      node scripts/definir-dominio.mjs https://endereco-do-site/
+  -->
+  <meta property="og:site_name" content="Biblioteca de Prompts">
+  <meta property="og:locale" content="pt_BR">
   <meta property="og:title" content="Biblioteca de Prompts">
   <meta property="og:description" content="Prompts prontos para o serviço público: redação oficial, licitações e contratos, gestão, engenharia, RH e jurídico.">
   <meta property="og:type" content="website">
-  <!-- Pendência do dono do projeto: definir o domínio final e atualizar esta URL -->
   <meta property="og:url" content="https://exemplo.com/">
+  <meta property="og:image" content="https://exemplo.com/assets/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Biblioteca de Prompts: prompts prontos e revisados para o serviço público">
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="style.css">
+
+  <!--
+    Aplica o tema antes da primeira pintura, para não "piscar" claro e depois
+    escuro. Usa o tema salvo; sem tema salvo, segue a preferência do sistema.
+    A chave precisa ser a mesma de CHAVE_TEMA em script.js.
+  -->
+  <script>
+    (function () {
+      var tema = null;
+      try {
+        tema = localStorage.getItem("biblioteca-de-prompts:tema");
+      } catch (erro) {}
+      if (tema !== "claro" && tema !== "escuro") {
+        tema = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+      }
+      document.documentElement.setAttribute("data-theme", tema);
+    })();
+  </script>
 </head>
 <body>
   <a class="pular-para-conteudo" href="#conteudo-principal">Pular para o conteúdo</a>
@@ -28,7 +61,11 @@
     <form class="painel-busca" role="search" aria-label="Buscar prompts">
       <div class="painel-busca__campo">
         <label for="busca" class="rotulo-oculto">Buscar por título, descrição ou tag</label>
-        <input type="search" id="busca" name="busca" placeholder="Buscar por título, descrição ou tag...">
+        <input type="search" id="busca" name="busca" placeholder="Buscar por título, descrição ou tag..."
+          aria-keyshortcuts="/" aria-describedby="dica-atalho" autocomplete="off">
+        <p id="dica-atalho" class="painel-busca__dica">
+          Atalho: <kbd>/</kbd> para buscar, <kbd>Esc</kbd> para limpar a busca.
+        </p>
       </div>
 
       <div class="painel-busca__filtros">

@@ -194,6 +194,29 @@ summary:focus-visible {
   font-family: inherit;
 }
 
+.painel-busca__dica {
+  margin: 6px 2px 0;
+  font-size: 0.78rem;
+  color: var(--cor-texto-suave);
+}
+
+.painel-busca__dica kbd {
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 1px 6px;
+  border: 1px solid var(--cor-borda);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--cor-superficie-alt);
+}
+
+/* Em telas de toque não há teclado físico: a dica só atrapalha. */
+@media (hover: none) and (pointer: coarse) {
+  .painel-busca__dica {
+    display: none;
+  }
+}
+
 .painel-busca__filtros {
   display: flex;
   flex-wrap: wrap;

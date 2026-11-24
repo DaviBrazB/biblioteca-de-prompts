@@ -72,6 +72,22 @@ O site mostra o selo **Novo** nos prompts com `dataCriacao` de até 30 dias atr�
 
 Qualquer pessoa pode sugerir um prompt pelo link no rodapé do site, que abre o formulário de issue "Sugestão de prompt" no GitHub (`.github/ISSUE_TEMPLATE/sugestao-de-prompt.yml`). É preciso ter conta no GitHub. A sugestão não entra no site automaticamente: o dono do projeto revisa e, se aprovar, adiciona o item ao `prompts.json`.
 
+## Endereço do site e compartilhamento
+
+Enquanto o endereço definitivo não existir, `og:url` e `og:image` no `index.html` usam o placeholder `https://exemplo.com/`, e o preview do link (WhatsApp, Teams etc.) não mostra a imagem. Quando o endereço estiver definido, rode:
+
+```bash
+node scripts/definir-dominio.mjs https://endereco-do-site/
+```
+
+O script atualiza `og:url` e `og:image`, cria o `<link rel="canonical">`, gera o `sitemap.xml` e acrescenta a linha `Sitemap:` ao `robots.txt`. Pode ser rodado de novo se o endereço mudar.
+
+A imagem de compartilhamento é `assets/og-image.png` (1200×630), gerada a partir de `assets/og-image.svg`. Para regenerá-la depois de editar o SVG:
+
+```bash
+google-chrome --headless --hide-scrollbars --window-size=1200,630 --screenshot=assets/og-image.png assets/og-image.svg
+```
+
 ## Deploy na Vercel
 
 O projeto não tem passo de build: é servido como arquivos estáticos a partir da raiz do repositório. Para publicar:
