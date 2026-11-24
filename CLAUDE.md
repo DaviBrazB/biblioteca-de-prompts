@@ -40,7 +40,7 @@ Lista de objetos. Cada item tem 9 campos:
 
 ## 4. O que já foi implementado (MVP concluído)
 
-- Estrutura de dados em `prompts.json` com os prompts atuais (hoje 7 itens, cobrindo Redação oficial, Gestão e Licitações e contratos).
+- Estrutura de dados em `prompts.json` com 13 prompts, cobrindo as seis áreas (3 de Redação oficial e 2 de cada uma das demais), todos no formato padrão: papel da IA, dados de entrada com `[PLACEHOLDERS]`, estrutura esperada da resposta e regras (inclusive não inventar normas e sinalizar o que precisa de verificação).
 - Layout responsivo com tema claro/escuro persistido em `localStorage`. Um script inline no `<head>` aplica o tema antes da primeira pintura (sem "piscar"): usa o tema salvo e, sem tema salvo, segue `prefers-color-scheme` (e acompanha mudanças do sistema até a pessoa escolher). A chave do `localStorage` aparece no `<head>` e em `CHAVE_TEMA` no `script.js`: as duas precisam bater.
 - Atalhos de teclado: `/` foca a busca (fora de campos de texto); `Esc` na busca limpa o termo e, com a busca vazia, tira o foco. Dica visível abaixo da busca, escondida em telas de toque.
 - Busca por título, descrição, texto e tags, sem diferenciar acento ou maiúsculas/minúsculas.
@@ -67,9 +67,9 @@ Uma branch e um PR por tarefa (por exemplo `feat/dados`, `feat/layout`, `feat/co
 
 ## 6. Pendências conhecidas
 
-- Nome definitivo do site e domínio: `og:url` e `og:image` ainda usam o placeholder `https://exemplo.com/`; canonical e `sitemap.xml` ficam de fora de propósito até lá. Quando o dono definir o endereço, rodar `node scripts/definir-dominio.mjs <url>`.
-- Faltam os demais prompts reais do dono: hoje há 7 itens em `prompts.json`, a meta é ter mais.
-- Ainda não há prompts de Engenharia, RH e Jurídico em `prompts.json` (essas áreas não aparecem no filtro até existir conteúdo).
+- Nome definitivo do site e domínio: `og:url` e `og:image` ainda usam o placeholder `https://exemplo.com/`; canonical e `sitemap.xml` ficam de fora de propósito até lá. Quando o dono definir o endereço, rodar `node scripts/definir-dominio.mjs <url>`. O site está publicado hoje em `https://biblioteca-de-prompts-one.vercel.app` (endereço padrão da Vercel, também cadastrado como homepage do repositório).
+- Faltam os demais prompts reais do dono: hoje há 13 itens em `prompts.json`, a meta é ter mais. Novos prompts devem seguir o mesmo formato padrão dos atuais.
+- As referências legais citadas nos prompts (Lei 14.133/2021, Lei 12.527/2011, Decreto 9.991/2019, Manual de Redação) foram escritas por IA e devem ser conferidas pelo dono na redação vigente.
 - O placeholder costuma ficar no fim de prompts longos; com o texto recolhido, o valor preenchido só aparece no texto ao clicar em "Ver mais" (o campo em si fica sempre visível).
 
 - O link "Sugira um prompt" exige conta no GitHub, o que pode afastar servidores sem conta; uma alternativa sem login (ex.: formulário externo) depende de decisão do dono.
