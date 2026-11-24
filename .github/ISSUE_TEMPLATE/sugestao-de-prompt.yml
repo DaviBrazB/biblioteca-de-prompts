@@ -1,0 +1,66 @@
+name: Sugestão de prompt
+description: Sugira um prompt para a Biblioteca de Prompts.
+title: "[Sugestão] "
+labels: ["sugestão de prompt"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por contribuir! As sugestões são revisadas antes de entrar na biblioteca.
+
+        **Atenção:** esta issue é pública. Não inclua dados pessoais, nomes de pessoas, números de processo ou qualquer informação sigilosa ou de acesso restrito.
+
+  - type: input
+    id: titulo
+    attributes:
+      label: Título
+      description: Nome curto do prompt.
+      placeholder: "Ex.: Revisar minuta de edital"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - Redação oficial
+        - Licitações e contratos
+        - Gestão
+        - Engenharia
+        - RH
+        - Jurídico
+    validations:
+      required: true
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: O que o prompt faz
+      description: Uma ou duas frases explicando o objetivo.
+    validations:
+      required: true
+
+  - type: textarea
+    id: texto
+    attributes:
+      label: Texto do prompt
+      description: |
+        O texto pronto para colar na IA. Use [PLACEHOLDER] em maiúsculas e entre colchetes
+        nos trechos que a pessoa deve preencher, por exemplo [ASSUNTO] ou [TEXTO].
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: tags
+    attributes:
+      label: Tags (opcional)
+      description: Palavras-chave separadas por vírgula.
+      placeholder: "edital, licitação, revisão"
+
+  - type: textarea
+    id: observacoes
+    attributes:
+      label: Observações (opcional)
+      description: Em qual ferramenta você testou, cuidados de uso, exemplos de resultado etc.

@@ -17,7 +17,9 @@ HTML, CSS e JavaScript puros, sem framework e sem passo de build. Arquivos princ
 - `script.js`: toda a lógica de comportamento (busca, filtros por área e por tag, contador de resultados, alternância e persistência de tema, expandir/recolher texto, destaque e preenchimento de placeholders, copiar texto e link, link direto por `#id`, montagem dos cards a partir do template, tratamento de carregando/erro/vazio).
 - `prompts.json`: dados dos prompts (fonte única de conteúdo).
 - `assets/favicon.svg`: favicon do site.
-- `README.md`: instruções de uso local, formato de dados e deploy na Vercel.
+- `scripts/validar-prompts.mjs`: validador do `prompts.json` (Node 18+, sem dependências); roda também no GitHub Actions (`.github/workflows/validar-prompts.yml`).
+- `.github/ISSUE_TEMPLATE/sugestao-de-prompt.yml`: formulário de issue usado pelo link "Sugira um prompt" do site.
+- `README.md`: instruções de uso local, formato de dados, validação, sugestões e deploy na Vercel.
 
 ## 3. Formato dos dados (`prompts.json`)
 
@@ -42,6 +44,10 @@ Lista de objetos. Cada item tem 9 campos:
 - Tags clicáveis: clicar numa tag filtra por ela (combinável com busca e área); um aviso no painel de busca mostra a tag ativa e permite removê-la.
 - Contador de resultados (`role="status"`, `aria-live="polite"`) e botão "Limpar filtros" no estado vazio.
 - Placeholders (`[TEXTO EM MAIÚSCULAS]`) destacados no texto do prompt; painel "Preencher N campos" (`<details>`) com um campo por placeholder. O botão "Copiar" copia o texto já preenchido (campos vazios ficam como placeholder). Valores, painel aberto e texto expandido sobrevivem à re-renderização da lista (estado em memória por `id`, não persistido).
+- Aviso de uso responsável (LGPD, informação restrita, ferramenta autorizada, revisão humana) no topo da lista, recolhido em um `<details>`.
+- Data de publicação/atualização em cada card, selos "Novo"/"Atualizado" (janela de 30 dias, constante `DIAS_SELO`) e ordenação (ordem da biblioteca, atualizados recentemente, título A a Z).
+- Link "Sugira um prompt" (rodapé e estado vazio) para o formulário de issue no GitHub.
+- Validador `scripts/validar-prompts.mjs` + workflow no GitHub Actions.
 - Link direto para cada prompt (`#id-do-prompt`) com botão "Copiar link"; ao abrir o link, os filtros são limpos se necessário, a página rola até o card, destaca-o e move o foco para o título.
 - Mensagem de "nenhum resultado" quando busca e filtro não retornam itens.
 - Texto do prompt recolhido por padrão, com botão "Ver mais"/"Ver menos" acessível (`aria-expanded`, `aria-controls`); o botão (e o degradê de corte) só aparecem quando o texto realmente está truncado, descontando o padding do bloco, e o cálculo é refeito ao redimensionar a janela.
@@ -53,7 +59,7 @@ Lista de objetos. Cada item tem 9 campos:
 
 ## 5. Convenções de workflow
 
-Uma branch e um PR por tarefa (por exemplo `feat/dados`, `feat/layout`, `feat/comportamento`, `feat/deploy`, `fix/...`), mergeados via squash na `main`. Não há suíte de testes automatizada: a validação é manual (confirmar que `prompts.json` é um JSON válido, testar no navegador, checar acessibilidade básica).
+Uma branch e um PR por tarefa (por exemplo `feat/dados`, `feat/layout`, `feat/comportamento`, `feat/deploy`, `fix/...`), mergeados via squash na `main`. Não há suíte de testes automatizada para a interface. Ao mexer em `prompts.json`, rode `node scripts/validar-prompts.mjs` (também roda no CI); o resto da validação é manual (testar no navegador, checar acessibilidade básica).
 
 ## 6. Pendências conhecidas
 
@@ -61,6 +67,9 @@ Uma branch e um PR por tarefa (por exemplo `feat/dados`, `feat/layout`, `feat/co
 - Faltam os demais prompts reais do dono: hoje há 7 itens em `prompts.json`, a meta é ter mais.
 - Ainda não há prompts de Engenharia, RH e Jurídico em `prompts.json` (essas áreas não aparecem no filtro até existir conteúdo).
 - O placeholder costuma ficar no fim de prompts longos; com o texto recolhido, o valor preenchido só aparece no texto ao clicar em "Ver mais" (o campo em si fica sempre visível).
+
+- O link "Sugira um prompt" exige conta no GitHub, o que pode afastar servidores sem conta; uma alternativa sem login (ex.: formulário externo) depende de decisão do dono.
+- O formulário de issue aplica o rótulo `sugestão de prompt`, que precisa ser criado no repositório para aparecer nas issues.
 
 ## 7. Fases futuras (fora do MVP atual)
 
