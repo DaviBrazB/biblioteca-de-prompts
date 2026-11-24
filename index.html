@@ -36,12 +36,6 @@
           <label for="filtro-area">Área</label>
           <select id="filtro-area" name="area">
             <option value="">Todas as áreas</option>
-            <option value="Redação oficial">Redação oficial</option>
-            <option value="Licitações e contratos">Licitações e contratos</option>
-            <option value="Gestão">Gestão</option>
-            <option value="Engenharia">Engenharia</option>
-            <option value="RH">RH</option>
-            <option value="Jurídico">Jurídico</option>
           </select>
         </div>
 
@@ -51,6 +45,13 @@
           </button>
         </div>
       </div>
+
+      <div id="filtro-tag-ativo" class="filtro-tag" hidden>
+        <span>Filtrando pela tag <strong id="filtro-tag-nome"></strong></span>
+        <button type="button" id="remover-filtro-tag" class="filtro-tag__remover">
+          Remover filtro<span class="rotulo-oculto"> de tag</span>
+        </button>
+      </div>
     </form>
   </header>
 
@@ -59,9 +60,12 @@
     <p id="estado-erro" class="estado-lista estado-lista--erro" role="alert" hidden>
       Não foi possível carregar os prompts agora. Tente novamente em alguns instantes.
     </p>
-    <p id="estado-vazio" class="estado-lista" hidden>
-      Nenhum prompt encontrado com os filtros atuais.
-    </p>
+    <div id="estado-vazio" class="estado-lista" hidden>
+      <p>Nenhum prompt encontrado com os filtros atuais.</p>
+      <button type="button" id="limpar-filtros" class="botao-secundario">Limpar filtros</button>
+    </div>
+
+    <p id="contador-resultados" class="contador-resultados" role="status" aria-live="polite"></p>
 
     <ul id="lista-prompts" class="grade-prompts" aria-label="Lista de prompts"></ul>
   </main>
@@ -77,22 +81,33 @@
         <span class="prompt-card__tipo"></span>
       </div>
 
-      <h2 class="prompt-card__titulo"></h2>
+      <h2 class="prompt-card__titulo" tabindex="-1"></h2>
       <p class="prompt-card__descricao"></p>
 
-      <ul class="prompt-card__tags"></ul>
+      <ul class="prompt-card__tags" aria-label="Tags"></ul>
 
       <div class="prompt-card__texto">
         <p class="prompt-card__texto-conteudo"></p>
       </div>
 
+      <details class="prompt-card__campos" hidden>
+        <summary class="prompt-card__campos-resumo"></summary>
+        <div class="prompt-card__campos-lista"></div>
+        <button type="button" class="prompt-card__limpar-campos botao-link">Limpar campos</button>
+      </details>
+
       <div class="prompt-card__acoes">
         <button type="button" class="prompt-card__toggle" aria-expanded="false">
           Ver mais
         </button>
-        <button type="button" class="prompt-card__copiar">
-          Copiar
-        </button>
+        <div class="prompt-card__acoes-direita">
+          <button type="button" class="prompt-card__link botao-secundario">
+            Copiar link
+          </button>
+          <button type="button" class="prompt-card__copiar">
+            Copiar
+          </button>
+        </div>
       </div>
     </li>
   </template>
