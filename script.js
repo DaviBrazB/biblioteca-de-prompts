@@ -14,9 +14,9 @@ const estadoCarregando = document.getElementById("estado-carregando");
 const estadoErro = document.getElementById("estado-erro");
 const estadoVazio = document.getElementById("estado-vazio");
 
+const formBusca = document.querySelector(".painel-busca");
 const campoBusca = document.getElementById("busca");
 const filtroArea = document.getElementById("filtro-area");
-const filtroTipo = document.getElementById("filtro-tipo");
 const botaoTema = document.getElementById("alternar-tema");
 
 let todosOsPrompts = [];
@@ -105,14 +105,27 @@ function promptCorrespondeABusca(prompt, termoNormalizado) {
 function filtrarPrompts() {
   const termoNormalizado = normalizarTexto(campoBusca.value.trim());
   const areaSelecionada = filtroArea.value;
-  const tipoSelecionado = filtroTipo.value;
 
   return todosOsPrompts.filter((prompt) => {
     const correspondeArea = !areaSelecionada || prompt.area === areaSelecionada;
-    const correspondeTipo = !tipoSelecionado || prompt.tipo === tipoSelecionado;
     const correspondeBusca = promptCorrespondeABusca(prompt, termoNormalizado);
 
-    return correspondeArea && correspondeTipo && correspondeBusca;
+    return correspondeArea && correspondeBusca;
+  });
+}
+
+/**
+ * Esconde o botão "Ver mais" nos cards cujo texto já cabe inteiro na área
+ * recolhida, já que nesse caso expandir não muda nada.
+ */
+function ajustarBotoesToggle() {
+  lista.querySelectorAll(".prompt-card").forEach((card) => {
+    const blocoTexto = card.querySelector(".prompt-card__texto");
+    const conteudo = card.querySelector(".prompt-card__texto-conteudo");
+    const botaoToggle = card.querySelector(".prompt-card__toggle");
+
+    const estaTruncado = conteudo.scrollHeight > blocoTexto.clientHeight + 1;
+    botaoToggle.hidden = !estaTruncado;
   });
 }
 
@@ -131,17 +144,23 @@ function renderizarPrompts() {
   });
 
   mostrarConteudo("lista");
+  ajustarBotoesToggle();
 }
 
 function aplicarTema(tema) {
   document.documentElement.setAttribute("data-theme", tema);
   const ehEscuro = tema === "escuro";
   botaoTema.setAttribute("aria-pressed", String(ehEscuro));
-  botaoTema.textContent = ehEscuro ? "Modo claro" : "Modo escuro";
 }
 
 function inicializarTema() {
-  const temaSalvo = localStorage.getItem(CHAVE_TEMA);
+  let temaSalvo = null;
+  try {
+    temaSalvo = localStorage.getItem(CHAVE_TEMA);
+  } catch (erro) {
+    // Sem acesso ao localStorage (ex: modo privado restrito): usa o tema claro padrão.
+    temaSalvo = null;
+  }
   aplicarTema(temaSalvo === "escuro" ? "escuro" : "claro");
 }
 
@@ -160,9 +179,12 @@ function alternarTema() {
 inicializarTema();
 botaoTema.addEventListener("click", alternarTema);
 
+formBusca.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+});
+
 campoBusca.addEventListener("input", renderizarPrompts);
 filtroArea.addEventListener("change", renderizarPrompts);
-filtroTipo.addEventListener("change", renderizarPrompts);
 
 mostrarConteudo("carregando");
 
