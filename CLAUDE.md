@@ -17,6 +17,9 @@ HTML, CSS e JavaScript puros, sem framework e sem passo de build. Arquivos princ
 - `script.js`: toda a lógica de comportamento (busca, filtros por área e por tag, contador de resultados, alternância e persistência de tema, expandir/recolher texto, destaque e preenchimento de placeholders, copiar texto e link, link direto por `#id`, montagem dos cards a partir do template, tratamento de carregando/erro/vazio).
 - `prompts.json`: dados dos prompts (fonte única de conteúdo).
 - `assets/favicon.svg`: favicon do site.
+- `assets/og-image.svg` / `assets/og-image.png`: imagem de compartilhamento (og:image, 1200×630); o PNG é gerado do SVG (comando no README).
+- `scripts/definir-dominio.mjs`: grava o endereço definitivo em og:url, og:image, canonical, `sitemap.xml` e `robots.txt`.
+- `robots.txt`: libera a indexação; a linha `Sitemap:` só entra quando o domínio for definido.
 - `scripts/validar-prompts.mjs`: validador do `prompts.json` (Node 18+, sem dependências); roda também no GitHub Actions (`.github/workflows/validar-prompts.yml`).
 - `.github/ISSUE_TEMPLATE/sugestao-de-prompt.yml`: formulário de issue usado pelo link "Sugira um prompt" do site.
 - `README.md`: instruções de uso local, formato de dados, validação, sugestões e deploy na Vercel.
@@ -38,7 +41,8 @@ Lista de objetos. Cada item tem 9 campos:
 ## 4. O que já foi implementado (MVP concluído)
 
 - Estrutura de dados em `prompts.json` com os prompts atuais (hoje 7 itens, cobrindo Redação oficial, Gestão e Licitações e contratos).
-- Layout responsivo com tema claro/escuro persistido em `localStorage`; o site sempre inicia no tema claro, independente do tema salvo na visita anterior, carregando-o só depois.
+- Layout responsivo com tema claro/escuro persistido em `localStorage`. Um script inline no `<head>` aplica o tema antes da primeira pintura (sem "piscar"): usa o tema salvo e, sem tema salvo, segue `prefers-color-scheme` (e acompanha mudanças do sistema até a pessoa escolher). A chave do `localStorage` aparece no `<head>` e em `CHAVE_TEMA` no `script.js`: as duas precisam bater.
+- Atalhos de teclado: `/` foca a busca (fora de campos de texto); `Esc` na busca limpa o termo e, com a busca vazia, tira o foco. Dica visível abaixo da busca, escondida em telas de toque.
 - Busca por título, descrição, texto e tags, sem diferenciar acento ou maiúsculas/minúsculas.
 - Filtro por área montado a partir dos dados: o select só lista áreas que têm prompts, com a contagem de cada uma, na ordem canônica das seis áreas.
 - Tags clicáveis: clicar numa tag filtra por ela (combinável com busca e área); um aviso no painel de busca mostra a tag ativa e permite removê-la.
@@ -54,7 +58,7 @@ Lista de objetos. Cada item tem 9 campos:
 - Botão "Copiar" com feedback visual temporário ("Copiado!" ou aviso de falha).
 - Tratamento de erro ao carregar `prompts.json` (estado de erro visível com `role="alert"`).
 - Acessibilidade básica: `lang="pt-BR"`, labels em todos os campos, `aria-expanded` e `aria-pressed` nos botões de estado, foco visível, link "pular para o conteúdo".
-- SEO básico: `title`, `meta description` e tags Open Graph no `index.html`.
+- SEO básico: `title`, `meta description`, Open Graph completo (incluindo `og:image`, `og:locale`, `og:site_name`), `twitter:card`, `theme-color` e `robots.txt`.
 - Favicon em `assets/favicon.svg`.
 
 ## 5. Convenções de workflow
@@ -63,7 +67,7 @@ Uma branch e um PR por tarefa (por exemplo `feat/dados`, `feat/layout`, `feat/co
 
 ## 6. Pendências conhecidas
 
-- Nome definitivo do site e domínio: há um placeholder em `og:url` no `index.html` (`https://exemplo.com/`) esperando a definição do dono.
+- Nome definitivo do site e domínio: `og:url` e `og:image` ainda usam o placeholder `https://exemplo.com/`; canonical e `sitemap.xml` ficam de fora de propósito até lá. Quando o dono definir o endereço, rodar `node scripts/definir-dominio.mjs <url>`.
 - Faltam os demais prompts reais do dono: hoje há 7 itens em `prompts.json`, a meta é ter mais.
 - Ainda não há prompts de Engenharia, RH e Jurídico em `prompts.json` (essas áreas não aparecem no filtro até existir conteúdo).
 - O placeholder costuma ficar no fim de prompts longos; com o texto recolhido, o valor preenchido só aparece no texto ao clicar em "Ver mais" (o campo em si fica sempre visível).

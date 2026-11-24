@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!--
+    Fonte da imagem de compartilhamento (og:image). O PNG é gerado a partir
+    deste arquivo com o Chrome headless; o comando está no README.
+  -->
+  <defs>
+    <linearGradient id="fundo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a1f3d"/>
+      <stop offset="1" stop-color="#14335c"/>
+    </linearGradient>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    .chip { fill: rgba(255,255,255,0.10); stroke: rgba(255,255,255,0.35); }
+    .chip-texto { fill: #ffffff; font-size: 22px; font-weight: 600; }
+  </style>
+
+  <rect width="1200" height="630" fill="url(#fundo)"/>
+  <rect x="0" y="0" width="12" height="630" fill="#6ea8e8"/>
+
+  <rect x="96" y="96" width="84" height="84" rx="14" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="4"/>
+  <text x="138" y="152" text-anchor="middle" fill="#ffffff" font-size="38" font-weight="700">BP</text>
+
+  <text x="96" y="300" fill="#ffffff" font-size="84" font-weight="700" letter-spacing="-1">Biblioteca de Prompts</text>
+  <text x="96" y="368" fill="rgba(255,255,255,0.85)" font-size="36">Prompts prontos e revisados para o dia a dia do serviço público</text>
+
+  <g transform="translate(96 440)">
+    <rect class="chip" x="0" y="0" width="212" height="50" rx="25"/>
+    <text class="chip-texto" x="106" y="33" text-anchor="middle">Redação oficial</text>
+    <rect class="chip" x="224" y="0" width="272" height="50" rx="25"/>
+    <text class="chip-texto" x="360" y="33" text-anchor="middle">Licitações e contratos</text>
+    <rect class="chip" x="508" y="0" width="118" height="50" rx="25"/>
+    <text class="chip-texto" x="567" y="33" text-anchor="middle">Gestão</text>
+    <rect class="chip" x="638" y="0" width="164" height="50" rx="25"/>
+    <text class="chip-texto" x="720" y="33" text-anchor="middle">Engenharia</text>
+    <rect class="chip" x="814" y="0" width="72" height="50" rx="25"/>
+    <text class="chip-texto" x="850" y="33" text-anchor="middle">RH</text>
+    <rect class="chip" x="898" y="0" width="140" height="50" rx="25"/>
+    <text class="chip-texto" x="968" y="33" text-anchor="middle">Jurídico</text>
+  </g>
+</svg>

@@ -585,15 +585,36 @@ function aplicarTema(tema) {
   botaoTema.setAttribute("aria-pressed", String(ehEscuro));
 }
 
-function inicializarTema() {
-  let temaSalvo = null;
+/**
+ * O <head> já aplicou o tema antes da pintura (tema salvo ou preferência do
+ * sistema). Aqui só sincronizamos o botão e, enquanto a pessoa não escolher
+ * um tema, acompanhamos mudanças na preferência do sistema.
+ */
+function lerTemaSalvo() {
   try {
-    temaSalvo = localStorage.getItem(CHAVE_TEMA);
+    const tema = localStorage.getItem(CHAVE_TEMA);
+    return tema === "claro" || tema === "escuro" ? tema : null;
   } catch (erro) {
-    // Sem acesso ao localStorage (ex: modo privado restrito): usa o tema claro padrão.
-    temaSalvo = null;
+    // Sem acesso ao localStorage (ex: modo privado restrito).
+    return null;
   }
-  aplicarTema(temaSalvo === "escuro" ? "escuro" : "claro");
+}
+
+function inicializarTema() {
+  const preferenciaEscura = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  const temaAtual = document.documentElement.getAttribute("data-theme");
+  const temaInicial =
+    lerTemaSalvo() || (temaAtual === "escuro" || temaAtual === "claro" ? temaAtual : null) ||
+    (preferenciaEscura && preferenciaEscura.matches ? "escuro" : "claro");
+  aplicarTema(temaInicial);
+
+  if (preferenciaEscura) {
+    preferenciaEscura.addEventListener("change", (evento) => {
+      if (!lerTemaSalvo()) {
+        aplicarTema(evento.matches ? "escuro" : "claro");
+      }
+    });
+  }
 }
 
 function alternarTema() {
@@ -607,6 +628,44 @@ function alternarTema() {
     // Sem acesso ao localStorage (ex: modo privado): a escolha só vale para esta visita.
   }
 }
+
+/* ===========================================================
+   Atalhos de teclado
+   =========================================================== */
+
+function estaDigitando(elemento) {
+  return Boolean(
+    elemento &&
+      (elemento.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(elemento.tagName))
+  );
+}
+
+/* "/" leva à busca (como em muitos sites), exceto quando já se está digitando. */
+document.addEventListener("keydown", (evento) => {
+  if (evento.key !== "/" || evento.ctrlKey || evento.metaKey || evento.altKey) {
+    return;
+  }
+  if (estaDigitando(document.activeElement)) {
+    return;
+  }
+  evento.preventDefault();
+  campoBusca.focus();
+  campoBusca.select();
+});
+
+/* "Esc" na busca limpa o termo; com a busca já vazia, tira o foco do campo. */
+campoBusca.addEventListener("keydown", (evento) => {
+  if (evento.key !== "Escape") {
+    return;
+  }
+  evento.preventDefault();
+  if (campoBusca.value) {
+    campoBusca.value = "";
+    renderizarPrompts();
+  } else {
+    campoBusca.blur();
+  }
+});
 
 /* ===========================================================
    Inicialização
