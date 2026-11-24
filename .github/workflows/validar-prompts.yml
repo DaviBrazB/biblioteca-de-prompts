@@ -1,0 +1,27 @@
+name: Validar prompts
+
+on:
+  pull_request:
+    paths:
+      - "prompts.json"
+      - "scripts/validar-prompts.mjs"
+      - ".github/workflows/validar-prompts.yml"
+  push:
+    branches: [main]
+    paths:
+      - "prompts.json"
+      - "scripts/validar-prompts.mjs"
+      - ".github/workflows/validar-prompts.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node scripts/validar-prompts.mjs

@@ -14,10 +14,15 @@ HTML, CSS e JavaScript puros, sem framework e sem passo de build. Arquivos princ
 
 - `index.html`: estrutura da página (cabeçalho, busca, filtros, estados de carregamento/erro/vazio) e o `<template>` usado para montar cada card de prompt.
 - `style.css`: variáveis CSS (`:root` e `[data-theme="escuro"]`) para tema claro/escuro, e o layout responsivo.
-- `script.js`: toda a lógica de comportamento (busca, filtro por área, alternância e persistência de tema, expandir/recolher texto, copiar, montagem dos cards a partir do template, tratamento de carregando/erro/vazio).
+- `script.js`: toda a lógica de comportamento (busca, filtros por área e por tag, contador de resultados, alternância e persistência de tema, expandir/recolher texto, destaque e preenchimento de placeholders, copiar texto e link, link direto por `#id`, montagem dos cards a partir do template, tratamento de carregando/erro/vazio).
 - `prompts.json`: dados dos prompts (fonte única de conteúdo).
 - `assets/favicon.svg`: favicon do site.
-- `README.md`: instruções de uso local, formato de dados e deploy na Vercel.
+- `assets/og-image.svg` / `assets/og-image.png`: imagem de compartilhamento (og:image, 1200×630); o PNG é gerado do SVG (comando no README).
+- `scripts/definir-dominio.mjs`: grava o endereço definitivo em og:url, og:image, canonical, `sitemap.xml` e `robots.txt`.
+- `robots.txt`: libera a indexação; a linha `Sitemap:` só entra quando o domínio for definido.
+- `scripts/validar-prompts.mjs`: validador do `prompts.json` (Node 18+, sem dependências); roda também no GitHub Actions (`.github/workflows/validar-prompts.yml`).
+- `.github/ISSUE_TEMPLATE/sugestao-de-prompt.yml`: formulário de issue usado pelo link "Sugira um prompt" do site.
+- `README.md`: instruções de uso local, formato de dados, validação, sugestões e deploy na Vercel.
 
 ## 3. Formato dos dados (`prompts.json`)
 
@@ -36,27 +41,39 @@ Lista de objetos. Cada item tem 9 campos:
 ## 4. O que já foi implementado (MVP concluído)
 
 - Estrutura de dados em `prompts.json` com os prompts atuais (hoje 7 itens, cobrindo Redação oficial, Gestão e Licitações e contratos).
-- Layout responsivo com tema claro/escuro persistido em `localStorage`; o site sempre inicia no tema claro, independente do tema salvo na visita anterior, carregando-o só depois.
+- Layout responsivo com tema claro/escuro persistido em `localStorage`. Um script inline no `<head>` aplica o tema antes da primeira pintura (sem "piscar"): usa o tema salvo e, sem tema salvo, segue `prefers-color-scheme` (e acompanha mudanças do sistema até a pessoa escolher). A chave do `localStorage` aparece no `<head>` e em `CHAVE_TEMA` no `script.js`: as duas precisam bater.
+- Atalhos de teclado: `/` foca a busca (fora de campos de texto); `Esc` na busca limpa o termo e, com a busca vazia, tira o foco. Dica visível abaixo da busca, escondida em telas de toque.
 - Busca por título, descrição, texto e tags, sem diferenciar acento ou maiúsculas/minúsculas.
-- Filtro por área (select com as seis áreas).
+- Filtro por área montado a partir dos dados: o select só lista áreas que têm prompts, com a contagem de cada uma, na ordem canônica das seis áreas.
+- Tags clicáveis: clicar numa tag filtra por ela (combinável com busca e área); um aviso no painel de busca mostra a tag ativa e permite removê-la.
+- Contador de resultados (`role="status"`, `aria-live="polite"`) e botão "Limpar filtros" no estado vazio.
+- Placeholders (`[TEXTO EM MAIÚSCULAS]`) destacados no texto do prompt; painel "Preencher N campos" (`<details>`) com um campo por placeholder. O botão "Copiar" copia o texto já preenchido (campos vazios ficam como placeholder). Valores, painel aberto e texto expandido sobrevivem à re-renderização da lista (estado em memória por `id`, não persistido).
+- Aviso de uso responsável (LGPD, informação restrita, ferramenta autorizada, revisão humana) no topo da lista, recolhido em um `<details>`.
+- Data de publicação/atualização em cada card, selos "Novo"/"Atualizado" (janela de 30 dias, constante `DIAS_SELO`) e ordenação (ordem da biblioteca, atualizados recentemente, título A a Z).
+- Link "Sugira um prompt" (rodapé e estado vazio) para o formulário de issue no GitHub.
+- Validador `scripts/validar-prompts.mjs` + workflow no GitHub Actions.
+- Link direto para cada prompt (`#id-do-prompt`) com botão "Copiar link"; ao abrir o link, os filtros são limpos se necessário, a página rola até o card, destaca-o e move o foco para o título.
 - Mensagem de "nenhum resultado" quando busca e filtro não retornam itens.
-- Texto do prompt recolhido por padrão, com botão "Ver mais"/"Ver menos" acessível (`aria-expanded`, `aria-controls`); o botão só aparece quando o texto realmente está truncado na área recolhida.
+- Texto do prompt recolhido por padrão, com botão "Ver mais"/"Ver menos" acessível (`aria-expanded`, `aria-controls`); o botão (e o degradê de corte) só aparecem quando o texto realmente está truncado, descontando o padding do bloco, e o cálculo é refeito ao redimensionar a janela.
 - Botão "Copiar" com feedback visual temporário ("Copiado!" ou aviso de falha).
 - Tratamento de erro ao carregar `prompts.json` (estado de erro visível com `role="alert"`).
 - Acessibilidade básica: `lang="pt-BR"`, labels em todos os campos, `aria-expanded` e `aria-pressed` nos botões de estado, foco visível, link "pular para o conteúdo".
-- SEO básico: `title`, `meta description` e tags Open Graph no `index.html`.
+- SEO básico: `title`, `meta description`, Open Graph completo (incluindo `og:image`, `og:locale`, `og:site_name`), `twitter:card`, `theme-color` e `robots.txt`.
 - Favicon em `assets/favicon.svg`.
 
 ## 5. Convenções de workflow
 
-Uma branch e um PR por tarefa (por exemplo `feat/dados`, `feat/layout`, `feat/comportamento`, `feat/deploy`, `fix/...`), mergeados via squash na `main`. Não há suíte de testes automatizada: a validação é manual (confirmar que `prompts.json` é um JSON válido, testar no navegador, checar acessibilidade básica).
+Uma branch e um PR por tarefa (por exemplo `feat/dados`, `feat/layout`, `feat/comportamento`, `feat/deploy`, `fix/...`), mergeados via squash na `main`. Não há suíte de testes automatizada para a interface. Ao mexer em `prompts.json`, rode `node scripts/validar-prompts.mjs` (também roda no CI); o resto da validação é manual (testar no navegador, checar acessibilidade básica).
 
 ## 6. Pendências conhecidas
 
-- Nome definitivo do site e domínio: há um placeholder em `og:url` no `index.html` (`https://exemplo.com/`) esperando a definição do dono.
+- Nome definitivo do site e domínio: `og:url` e `og:image` ainda usam o placeholder `https://exemplo.com/`; canonical e `sitemap.xml` ficam de fora de propósito até lá. Quando o dono definir o endereço, rodar `node scripts/definir-dominio.mjs <url>`.
 - Faltam os demais prompts reais do dono: hoje há 7 itens em `prompts.json`, a meta é ter mais.
-- O filtro de área lista Engenharia, RH e Jurídico, mas ainda não há prompts dessas áreas em `prompts.json`; selecionar essas opções sempre mostra a lista vazia até existir conteúdo.
-- Ressalva técnica conhecida: em `ajustarBotoesToggle` (`script.js`, função que decide se mostra o botão "Ver mais"), o cálculo de truncamento pode esconder o botão mesmo quando o texto está cortado, por não descontar corretamente o padding do bloco `.prompt-card__texto`. Além disso, esse cálculo não é refeito quando a janela é redimensionada.
+- Ainda não há prompts de Engenharia, RH e Jurídico em `prompts.json` (essas áreas não aparecem no filtro até existir conteúdo).
+- O placeholder costuma ficar no fim de prompts longos; com o texto recolhido, o valor preenchido só aparece no texto ao clicar em "Ver mais" (o campo em si fica sempre visível).
+
+- O link "Sugira um prompt" exige conta no GitHub, o que pode afastar servidores sem conta; uma alternativa sem login (ex.: formulário externo) depende de decisão do dono.
+- O formulário de issue aplica o rótulo `sugestão de prompt`, que precisa ser criado no repositório para aparecer nas issues.
 
 ## 7. Fases futuras (fora do MVP atual)
 

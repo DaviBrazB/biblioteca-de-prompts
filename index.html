@@ -6,14 +6,47 @@
   <title>Biblioteca de Prompts</title>
   <meta name="description" content="Biblioteca de Prompts: prompts prontos e revisados para redação oficial, licitações e contratos, gestão, engenharia, RH e jurídico no serviço público.">
 
+  <meta name="theme-color" content="#0a1f3d">
+  <meta name="color-scheme" content="light dark">
+
+  <!--
+    Domínio: enquanto o endereço definitivo não existir, og:url e og:image usam o
+    placeholder https://exemplo.com/. Para trocar, rode:
+      node scripts/definir-dominio.mjs https://endereco-do-site/
+  -->
+  <meta property="og:site_name" content="Biblioteca de Prompts">
+  <meta property="og:locale" content="pt_BR">
   <meta property="og:title" content="Biblioteca de Prompts">
   <meta property="og:description" content="Prompts prontos para o serviço público: redação oficial, licitações e contratos, gestão, engenharia, RH e jurídico.">
   <meta property="og:type" content="website">
-  <!-- Pendência do dono do projeto: definir o domínio final e atualizar esta URL -->
   <meta property="og:url" content="https://exemplo.com/">
+  <meta property="og:image" content="https://exemplo.com/assets/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Biblioteca de Prompts: prompts prontos e revisados para o serviço público">
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="style.css">
+
+  <!--
+    Aplica o tema antes da primeira pintura, para não "piscar" claro e depois
+    escuro. Usa o tema salvo; sem tema salvo, segue a preferência do sistema.
+    A chave precisa ser a mesma de CHAVE_TEMA em script.js.
+  -->
+  <script>
+    (function () {
+      var tema = null;
+      try {
+        tema = localStorage.getItem("biblioteca-de-prompts:tema");
+      } catch (erro) {}
+      if (tema !== "claro" && tema !== "escuro") {
+        tema = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+      }
+      document.documentElement.setAttribute("data-theme", tema);
+    })();
+  </script>
 </head>
 <body>
   <a class="pular-para-conteudo" href="#conteudo-principal">Pular para o conteúdo</a>
@@ -28,7 +61,11 @@
     <form class="painel-busca" role="search" aria-label="Buscar prompts">
       <div class="painel-busca__campo">
         <label for="busca" class="rotulo-oculto">Buscar por título, descrição ou tag</label>
-        <input type="search" id="busca" name="busca" placeholder="Buscar por título, descrição ou tag...">
+        <input type="search" id="busca" name="busca" placeholder="Buscar por título, descrição ou tag..."
+          aria-keyshortcuts="/" aria-describedby="dica-atalho" autocomplete="off">
+        <p id="dica-atalho" class="painel-busca__dica">
+          Atalho: <kbd>/</kbd> para buscar, <kbd>Esc</kbd> para limpar a busca.
+        </p>
       </div>
 
       <div class="painel-busca__filtros">
@@ -36,12 +73,15 @@
           <label for="filtro-area">Área</label>
           <select id="filtro-area" name="area">
             <option value="">Todas as áreas</option>
-            <option value="Redação oficial">Redação oficial</option>
-            <option value="Licitações e contratos">Licitações e contratos</option>
-            <option value="Gestão">Gestão</option>
-            <option value="Engenharia">Engenharia</option>
-            <option value="RH">RH</option>
-            <option value="Jurídico">Jurídico</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="ordenacao">Ordenar por</label>
+          <select id="ordenacao" name="ordenacao">
+            <option value="biblioteca">Ordem da biblioteca</option>
+            <option value="recentes">Atualizados recentemente</option>
+            <option value="titulo">Título (A a Z)</option>
           </select>
         </div>
 
@@ -51,48 +91,113 @@
           </button>
         </div>
       </div>
+
+      <div id="filtro-tag-ativo" class="filtro-tag" hidden>
+        <span>Filtrando pela tag <strong id="filtro-tag-nome"></strong></span>
+        <button type="button" id="remover-filtro-tag" class="filtro-tag__remover">
+          Remover filtro<span class="rotulo-oculto"> de tag</span>
+        </button>
+      </div>
     </form>
   </header>
 
   <main id="conteudo-principal" class="conteudo">
+    <aside class="aviso-uso" aria-labelledby="aviso-uso-titulo">
+      <details class="aviso-uso__detalhes">
+        <summary class="aviso-uso__resumo">
+          <span id="aviso-uso-titulo" class="aviso-uso__titulo">Uso responsável:</span>
+          não cole dados pessoais, sigilosos ou de acesso restrito em ferramentas de IA
+          e revise sempre o resultado.
+          <span class="aviso-uso__mais">Saiba mais</span>
+        </summary>
+        <ul class="aviso-uso__lista">
+          <li>
+            <strong>Dados pessoais:</strong> nomes, CPF, endereços, dados de saúde e outras
+            informações de pessoas são protegidos pela LGPD (Lei nº 13.709/2018). Anonimize
+            ou substitua por dados fictícios antes de colar.
+          </li>
+          <li>
+            <strong>Informação restrita:</strong> processos sigilosos, documentos classificados
+            ou de acesso restrito (Lei nº 12.527/2011) não devem ser enviados a ferramentas
+            externas.
+          </li>
+          <li>
+            <strong>Ferramenta adequada:</strong> prefira as ferramentas de IA autorizadas pelo
+            seu órgão e siga a política interna de uso, se houver.
+          </li>
+          <li>
+            <strong>Revisão humana:</strong> a IA pode errar fatos, citar normas inexistentes ou
+            desatualizadas. Confira o conteúdo e a base legal; a responsabilidade pelo
+            documento final é de quem o assina.
+          </li>
+        </ul>
+      </details>
+    </aside>
+
+    <p id="contador-resultados" class="contador-resultados" role="status" aria-live="polite"></p>
+
     <p id="estado-carregando" class="estado-lista" role="status">Carregando prompts...</p>
     <p id="estado-erro" class="estado-lista estado-lista--erro" role="alert" hidden>
       Não foi possível carregar os prompts agora. Tente novamente em alguns instantes.
     </p>
-    <p id="estado-vazio" class="estado-lista" hidden>
-      Nenhum prompt encontrado com os filtros atuais.
-    </p>
+    <div id="estado-vazio" class="estado-lista" hidden>
+      <p>Nenhum prompt encontrado com os filtros atuais.</p>
+      <button type="button" id="limpar-filtros" class="botao-secundario">Limpar filtros</button>
+      <p class="estado-lista__sugestao">
+        Não achou o que precisava?
+        <a href="https://github.com/DaviBrazB/biblioteca-de-prompts/issues/new?template=sugestao-de-prompt.yml" target="_blank" rel="noopener">Sugira um prompt<span class="rotulo-oculto"> (abre o GitHub em nova aba)</span></a>.
+      </p>
+    </div>
 
     <ul id="lista-prompts" class="grade-prompts" aria-label="Lista de prompts"></ul>
   </main>
 
   <footer class="rodape">
     <p>Biblioteca de Prompts &mdash; conteúdo mantido pela equipe responsável pelo repositório.</p>
+    <p>
+      Tem um prompt que funciona bem no seu trabalho?
+      <a href="https://github.com/DaviBrazB/biblioteca-de-prompts/issues/new?template=sugestao-de-prompt.yml" target="_blank" rel="noopener">Sugira para a biblioteca</a>
+      <span class="rotulo-oculto">(abre o GitHub em nova aba)</span>
+    </p>
   </footer>
 
   <template id="modelo-card">
     <li class="prompt-card">
       <div class="prompt-card__cabecalho">
         <span class="prompt-card__area"></span>
+        <span class="prompt-card__selo" hidden></span>
         <span class="prompt-card__tipo"></span>
       </div>
 
-      <h2 class="prompt-card__titulo"></h2>
+      <h2 class="prompt-card__titulo" tabindex="-1"></h2>
       <p class="prompt-card__descricao"></p>
 
-      <ul class="prompt-card__tags"></ul>
+      <ul class="prompt-card__tags" aria-label="Tags"></ul>
+
+      <p class="prompt-card__data"></p>
 
       <div class="prompt-card__texto">
         <p class="prompt-card__texto-conteudo"></p>
       </div>
 
+      <details class="prompt-card__campos" hidden>
+        <summary class="prompt-card__campos-resumo"></summary>
+        <div class="prompt-card__campos-lista"></div>
+        <button type="button" class="prompt-card__limpar-campos botao-link">Limpar campos</button>
+      </details>
+
       <div class="prompt-card__acoes">
         <button type="button" class="prompt-card__toggle" aria-expanded="false">
           Ver mais
         </button>
-        <button type="button" class="prompt-card__copiar">
-          Copiar
-        </button>
+        <div class="prompt-card__acoes-direita">
+          <button type="button" class="prompt-card__link botao-secundario">
+            Copiar link
+          </button>
+          <button type="button" class="prompt-card__copiar">
+            Copiar
+          </button>
+        </div>
       </div>
     </li>
   </template>
