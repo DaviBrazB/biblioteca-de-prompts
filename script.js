@@ -1,7 +1,8 @@
 /*
   Biblioteca de Prompts - comportamento da página.
   Responsável por: montar os cards a partir do template (sem innerHTML),
-  busca e filtros combinados (texto, área e tag), contador de resultados,
+  busca e filtros combinados (texto, área e tag), ordenação, contador de
+  resultados, datas e selos "Novo"/"Atualizado",
   expandir/recolher o texto do prompt, destacar e preencher os
   [PLACEHOLDERS], copiar o texto e o link direto de cada prompt,
   alternar e persistir o tema, e tratar os estados de carregamento,
@@ -12,6 +13,9 @@ const CHAVE_TEMA = "biblioteca-de-prompts:tema";
 
 /* Ordem canônica das áreas no filtro; áreas fora desta lista vão ao final. */
 const ORDEM_AREAS = ["Redação oficial", "Licitações e contratos", "Gestão", "Engenharia", "RH", "Jurídico"];
+
+/* Por quantos dias um prompt criado ou atualizado ganha o selo "Novo"/"Atualizado". */
+const DIAS_SELO = 30;
 
 /*
   Placeholder: texto em MAIÚSCULAS entre colchetes, como [ASSUNTO] ou
@@ -30,6 +34,7 @@ const contadorResultados = document.getElementById("contador-resultados");
 const formBusca = document.querySelector(".painel-busca");
 const campoBusca = document.getElementById("busca");
 const filtroArea = document.getElementById("filtro-area");
+const campoOrdenacao = document.getElementById("ordenacao");
 const botaoTema = document.getElementById("alternar-tema");
 const filtroTagAtivo = document.getElementById("filtro-tag-ativo");
 const filtroTagNome = document.getElementById("filtro-tag-nome");
@@ -120,6 +125,57 @@ function renderizarTextoPrompt(elemento, texto, valores) {
 function rotuloDoPlaceholder(nome) {
   const minusculo = nome.toLocaleLowerCase("pt-BR");
   return minusculo.charAt(0).toLocaleUpperCase("pt-BR") + minusculo.slice(1);
+}
+
+/* ===========================================================
+   Datas e selos
+   =========================================================== */
+
+/** Converte "AAAA-MM-DD" em Date no fuso local (new Date("AAAA-MM-DD") usaria UTC). */
+function lerData(texto) {
+  const partes = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(texto || ""));
+  if (!partes) {
+    return null;
+  }
+  const data = new Date(Number(partes[1]), Number(partes[2]) - 1, Number(partes[3]));
+  return Number.isNaN(data.getTime()) ? null : data;
+}
+
+function diasDesde(data) {
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  return Math.floor((hoje - data) / 86400000);
+}
+
+/** "Novo" para criados há até DIAS_SELO dias; senão "Atualizado" se a atualização for recente. */
+function seloDoPrompt(prompt) {
+  const criacao = lerData(prompt.dataCriacao);
+  const atualizacao = lerData(prompt.dataAtualizacao);
+
+  if (criacao && diasDesde(criacao) <= DIAS_SELO) {
+    return "Novo";
+  }
+  if (atualizacao && criacao && atualizacao > criacao && diasDesde(atualizacao) <= DIAS_SELO) {
+    return "Atualizado";
+  }
+  return "";
+}
+
+function preencherData(elemento, prompt) {
+  const criacao = lerData(prompt.dataCriacao);
+  const atualizacao = lerData(prompt.dataAtualizacao);
+  const foiAtualizado = atualizacao && (!criacao || atualizacao > criacao);
+  const data = foiAtualizado ? atualizacao : criacao;
+
+  if (!data) {
+    elemento.hidden = true;
+    return;
+  }
+
+  const tempo = document.createElement("time");
+  tempo.dateTime = foiAtualizado ? prompt.dataAtualizacao : prompt.dataCriacao;
+  tempo.textContent = data.toLocaleDateString("pt-BR");
+  elemento.append(foiAtualizado ? "Atualizado em " : "Publicado em ", tempo);
 }
 
 /* ===========================================================
@@ -245,7 +301,16 @@ function montarCard(prompt) {
   card.querySelector(".prompt-card__titulo").textContent = prompt.titulo;
   card.querySelector(".prompt-card__descricao").textContent = prompt.descricao;
 
+  const selo = seloDoPrompt(prompt);
+  const elementoSelo = card.querySelector(".prompt-card__selo");
+  if (selo) {
+    elementoSelo.hidden = false;
+    elementoSelo.textContent = selo;
+    elementoSelo.classList.add(`prompt-card__selo--${normalizarTexto(selo)}`);
+  }
+
   montarTags(card, prompt);
+  preencherData(card.querySelector(".prompt-card__data"), prompt);
 
   const idTexto = `prompt-texto-${prompt.id}`;
   const blocoTexto = card.querySelector(".prompt-card__texto");
@@ -366,10 +431,24 @@ function filtrarPrompts() {
   const termoNormalizado = normalizarTexto(campoBusca.value.trim());
   const areaSelecionada = filtroArea.value;
 
-  return todosOsPrompts.filter((prompt) => {
+  const filtrados = todosOsPrompts.filter((prompt) => {
     const correspondeArea = !areaSelecionada || prompt.area === areaSelecionada;
     return correspondeArea && promptTemTag(prompt, tagAtiva) && promptCorrespondeABusca(prompt, termoNormalizado);
   });
+
+  return ordenarPrompts(filtrados, campoOrdenacao.value);
+}
+
+/** Ordena sem alterar a lista original; empates mantêm a ordem do prompts.json. */
+function ordenarPrompts(prompts, criterio) {
+  const copia = [...prompts];
+  if (criterio === "titulo") {
+    copia.sort((a, b) => String(a.titulo).localeCompare(String(b.titulo), "pt-BR"));
+  } else if (criterio === "recentes") {
+    const dataMaisRecente = (p) => String(p.dataAtualizacao || p.dataCriacao || "");
+    copia.sort((a, b) => dataMaisRecente(b).localeCompare(dataMaisRecente(a)));
+  }
+  return copia;
 }
 
 function haFiltrosAtivos() {
@@ -506,15 +585,36 @@ function aplicarTema(tema) {
   botaoTema.setAttribute("aria-pressed", String(ehEscuro));
 }
 
-function inicializarTema() {
-  let temaSalvo = null;
+/**
+ * O <head> já aplicou o tema antes da pintura (tema salvo ou preferência do
+ * sistema). Aqui só sincronizamos o botão e, enquanto a pessoa não escolher
+ * um tema, acompanhamos mudanças na preferência do sistema.
+ */
+function lerTemaSalvo() {
   try {
-    temaSalvo = localStorage.getItem(CHAVE_TEMA);
+    const tema = localStorage.getItem(CHAVE_TEMA);
+    return tema === "claro" || tema === "escuro" ? tema : null;
   } catch (erro) {
-    // Sem acesso ao localStorage (ex: modo privado restrito): usa o tema claro padrão.
-    temaSalvo = null;
+    // Sem acesso ao localStorage (ex: modo privado restrito).
+    return null;
   }
-  aplicarTema(temaSalvo === "escuro" ? "escuro" : "claro");
+}
+
+function inicializarTema() {
+  const preferenciaEscura = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  const temaAtual = document.documentElement.getAttribute("data-theme");
+  const temaInicial =
+    lerTemaSalvo() || (temaAtual === "escuro" || temaAtual === "claro" ? temaAtual : null) ||
+    (preferenciaEscura && preferenciaEscura.matches ? "escuro" : "claro");
+  aplicarTema(temaInicial);
+
+  if (preferenciaEscura) {
+    preferenciaEscura.addEventListener("change", (evento) => {
+      if (!lerTemaSalvo()) {
+        aplicarTema(evento.matches ? "escuro" : "claro");
+      }
+    });
+  }
 }
 
 function alternarTema() {
@@ -530,6 +630,44 @@ function alternarTema() {
 }
 
 /* ===========================================================
+   Atalhos de teclado
+   =========================================================== */
+
+function estaDigitando(elemento) {
+  return Boolean(
+    elemento &&
+      (elemento.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(elemento.tagName))
+  );
+}
+
+/* "/" leva à busca (como em muitos sites), exceto quando já se está digitando. */
+document.addEventListener("keydown", (evento) => {
+  if (evento.key !== "/" || evento.ctrlKey || evento.metaKey || evento.altKey) {
+    return;
+  }
+  if (estaDigitando(document.activeElement)) {
+    return;
+  }
+  evento.preventDefault();
+  campoBusca.focus();
+  campoBusca.select();
+});
+
+/* "Esc" na busca limpa o termo; com a busca já vazia, tira o foco do campo. */
+campoBusca.addEventListener("keydown", (evento) => {
+  if (evento.key !== "Escape") {
+    return;
+  }
+  evento.preventDefault();
+  if (campoBusca.value) {
+    campoBusca.value = "";
+    renderizarPrompts();
+  } else {
+    campoBusca.blur();
+  }
+});
+
+/* ===========================================================
    Inicialização
    =========================================================== */
 
@@ -542,6 +680,7 @@ formBusca.addEventListener("submit", (evento) => {
 
 campoBusca.addEventListener("input", renderizarPrompts);
 filtroArea.addEventListener("change", renderizarPrompts);
+campoOrdenacao.addEventListener("change", renderizarPrompts);
 botaoRemoverTag.addEventListener("click", () => {
   definirTagAtiva("");
   campoBusca.focus();

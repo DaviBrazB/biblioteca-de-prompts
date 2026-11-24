@@ -54,7 +54,39 @@ Campos:
 - `dataCriacao`: data de criação do prompt, no formato `AAAA-MM-DD`.
 - `dataAtualizacao`: data da última atualização do prompt, no formato `AAAA-MM-DD`.
 
-Depois de editar o `prompts.json`, valide que o arquivo continua sendo um JSON válido (por exemplo, abrindo-o no editor ou rodando `python3 -m json.tool prompts.json` sem erros) e confira o resultado rodando o site localmente, como descrito acima.
+Depois de editar o `prompts.json`, rode o validador (precisa de Node.js 18 ou mais recente, sem instalar nada):
+
+```bash
+node scripts/validar-prompts.mjs
+```
+
+Ele confere se o arquivo é um JSON válido e se cada item segue o formato acima: campos obrigatórios, `id` em kebab-case e sem repetição, área e tipo permitidos, datas reais no formato `AAAA-MM-DD` (com `dataAtualizacao` igual ou posterior a `dataCriacao`), além de avisar sobre placeholders fora do padrão. Erros fazem o comando falhar; avisos não. O mesmo validador roda automaticamente no GitHub (workflow `Validar prompts`) em cada PR e push na `main` que altere o `prompts.json`.
+
+Por fim, confira o resultado rodando o site localmente, como descrito acima.
+
+### Selos "Novo" e "Atualizado"
+
+O site mostra o selo **Novo** nos prompts com `dataCriacao` de até 30 dias atrás e **Atualizado** quando `dataAtualizacao` é posterior à criação e também tem até 30 dias. Ao revisar um prompt existente, atualize `dataAtualizacao` para ele aparecer como atualizado e subir na ordenação "Atualizados recentemente".
+
+## Sugestões de prompts
+
+Qualquer pessoa pode sugerir um prompt pelo link no rodapé do site, que abre o formulário de issue "Sugestão de prompt" no GitHub (`.github/ISSUE_TEMPLATE/sugestao-de-prompt.yml`). É preciso ter conta no GitHub. A sugestão não entra no site automaticamente: o dono do projeto revisa e, se aprovar, adiciona o item ao `prompts.json`.
+
+## Endereço do site e compartilhamento
+
+Enquanto o endereço definitivo não existir, `og:url` e `og:image` no `index.html` usam o placeholder `https://exemplo.com/`, e o preview do link (WhatsApp, Teams etc.) não mostra a imagem. Quando o endereço estiver definido, rode:
+
+```bash
+node scripts/definir-dominio.mjs https://endereco-do-site/
+```
+
+O script atualiza `og:url` e `og:image`, cria o `<link rel="canonical">`, gera o `sitemap.xml` e acrescenta a linha `Sitemap:` ao `robots.txt`. Pode ser rodado de novo se o endereço mudar.
+
+A imagem de compartilhamento é `assets/og-image.png` (1200×630), gerada a partir de `assets/og-image.svg`. Para regenerá-la depois de editar o SVG:
+
+```bash
+google-chrome --headless --hide-scrollbars --window-size=1200,630 --screenshot=assets/og-image.png assets/og-image.svg
+```
 
 ## Deploy na Vercel
 
